@@ -17,7 +17,7 @@ const signup = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const PFP = `https://avatar.iran.liara.run/username?username=${firstName + lastName}&s=200&bg=282c34&fg=ffffff`;
+        const PFP = `https://avatar.iran.liara.run/username?username=${firstName}+${lastName}`;
 
         const newUser = new User({
             firstName,

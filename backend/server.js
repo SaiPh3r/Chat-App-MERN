@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const authRoutes = require('./routes/auth.routes');
+const messageRoutes = require('./routes/message.routes');
 const dbConfig = require('./db/dbConfig');
 
 // Middleware should come BEFORE routes
@@ -13,6 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Start server
 app.listen(port, () => {
