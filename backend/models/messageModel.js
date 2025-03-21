@@ -6,7 +6,7 @@ const messageSchema = new mongoose.Schema({
         required:true,
         ref:'User'
     },
-    recieverId:{
+    receiverId:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
         ref:'User'
@@ -20,4 +20,4 @@ const messageSchema = new mongoose.Schema({
 
 
 const Message = mongoose.model('Message', messageSchema);
-model.exports = Message;   
+module.exports = Message;
