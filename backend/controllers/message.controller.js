@@ -37,4 +37,24 @@ const sendMessage = async (req, res) => {
     }
 }
 
-module.exports = { sendMessage };
+const getMessages = async (req, res) => {
+    try {
+        const receiver = req.params.id;
+        const sender = req.user._id;
+
+        const converation = await conversationModel.findOne({ participants: { $all: [sender, receiver] } }).populate("messages");  // Populate the messages field  //populate is used to get the data of the referenced field
+        if (!converation) {
+            return res.status(200).json({ messages: [] });
+        }
+        res.status(200).json(converation.messages)
+
+
+        
+    } catch (error) {
+        console.error("Error in sendMessage:", error);
+        res.status(500).json({ error: "Internal server error" });
+        
+    }
+}
+
+module.exports = { sendMessage, getMessages };
