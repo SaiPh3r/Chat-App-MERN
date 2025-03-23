@@ -7,10 +7,10 @@ const useSignup = () => {
   const { setAuthUser } = useContext(AuthContext);
   
   const signup = async (firstName, lastName, username, password, confirmPassword, email) => {
+    // Validate input before making a request
     const success = handleInputErrors(firstName, lastName, username, password, confirmPassword, email);
-    if (!success) {
-      return;
-    }
+    if (!success) return;
+
     setLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
@@ -20,16 +20,17 @@ const useSignup = () => {
         },
         body: JSON.stringify({ firstName, lastName, username, password, confirmPassword, email })
       });
+
       const data = await res.json();
-      console.log(data);
-      if (data.error) {
-        throw new Error(data.error);
+
+      if (!res.ok) {  
+        throw new Error(data.message || "Signup failed");
       }
-      
-      // Use the data from the response
+
+      // Save user data in local storage
       localStorage.setItem("chat-user", JSON.stringify(data));
-      setAuthUser(data); // Update auth state
-      
+      setAuthUser(data); // Update authentication state
+
       toast.success("Signup successful!");
       
     } catch (error) {
@@ -44,6 +45,7 @@ const useSignup = () => {
 
 export default useSignup;
 
+// Function to validate form inputs
 function handleInputErrors(firstName, lastName, username, password, confirmPassword, email) {
   if (firstName.length < 3) {
     toast.error("First name must be at least 3 characters long");
