@@ -10,7 +10,7 @@ const useGetConversations = () => {
             setLoader(true)
             try {
                 const res = await fetch('/api/users')
-                const data = res.json()
+                const data = await res.json()
                 if(data.error){
                     throw new Error(data.error)
 
