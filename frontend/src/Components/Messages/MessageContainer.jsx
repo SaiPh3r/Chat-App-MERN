@@ -2,12 +2,13 @@ import React from 'react';
 import Messages from './Messages';
 import MessageInput from './MessageInput';
 import { LuMessageSquareText } from "react-icons/lu";
+import useConversation from '../../zustand/useConversation';
 
-const MessageContainer = () => {
-  const nochatselected = false;
+const MessageContainer = (conversation) => {
+  const{selectedConversation, setSelectedConversation} = useConversation()
   return (
     <div className='md:min-w-[650px] w-full max-w-4xl flex flex-col h-full bg-black rounded-lg overflow-hidden border border-yellow-500/10 shadow-xl shadow-yellow-500/5 transition-all duration-300 hover:scale-[1.01]'>
-      {nochatselected ? (
+      {!selectedConversation ? (
         <NoChatsSelected />
       ) : (
         <>
@@ -15,7 +16,7 @@ const MessageContainer = () => {
           <div className='bg-yellow-400 px-4 py-3 flex items-center justify-between'>
             <div>
               <span className='text-black mr-2'>To:</span>
-              <span className='text-black font-bold'>John Doe</span>
+              <span className='text-black font-bold'>{selectedConversation.username}</span>
             </div>
           </div>
           {/* Messages area */}

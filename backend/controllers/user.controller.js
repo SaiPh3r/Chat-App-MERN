@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const getUsersforSidebar = async (req, res) => {
     try {
         const loggedInUser = req.user._id;
+        console.log("loggedInUser:", loggedInUser);
         const allUsers = await User.find({ _id: { $ne: loggedInUser } }).select("-password");
         res.status(200).json(allUsers);
         

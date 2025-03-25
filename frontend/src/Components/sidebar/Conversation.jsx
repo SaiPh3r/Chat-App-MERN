@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import useConversation from '../../zustand/useConversation'
 
 const Conversation = ({conversation}) => {
-  console.log("Profile Pic URL:", conversation.profilePicture);
+  const{selectedConversation, setSelectedConversation} = useConversation()
+  const isSelected = selectedConversation?._id === conversation._id
+  useEffect(() => {
+    return()=>setSelectedConversation(null)
+  },[setSelectedConversation])
   return (
     <>
-      <div className="flex gap-3 items-center rounded-lg p-3 cursor-pointer transition-all duration-300 
-                      hover:bg-amber-600/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02]">
+      <div onClick={() => setSelectedConversation(conversation)} className={`flex gap-3 items-center rounded-lg p-3 cursor-pointer transition-all duration-300 
+      ${isSelected ? 'bg-amber-600/30 shadow-lg shadow-amber-500/40 scale-[1.02]' : 'hover:bg-amber-600/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02]'}`}>
         <div className="avatar online">
           <div className="w-14 h-14 rounded-full border-2 border-amber-500 shadow-md shadow-amber-500/30">
             <img src={conversation.profilePicture} className="object-cover" />
