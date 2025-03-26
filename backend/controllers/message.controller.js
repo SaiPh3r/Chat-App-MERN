@@ -1,6 +1,7 @@
 const conversationModel = require("../models/conversationModel");
 const MessageModel = require("../models/messageModel");
 
+
 const sendMessage = async (req, res) => {
     try {
         const message = req.body.message;
@@ -42,11 +43,11 @@ const getMessages = async (req, res) => {
         const receiver = req.params.id;
         const sender = req.user._id;
 
-        const converation = await conversationModel.findOne({ participants: { $all: [sender, receiver] } }).populate("messages");  // Populate the messages field  //populate is used to get the data of the referenced field
-        if (!converation) {
+        const conversation = await conversationModel.findOne({ participants: { $all: [sender, receiver] } }).populate("messages");  // Populate the messages field  //populate is used to get the data of the referenced field
+        if (!conversation) {
             return res.status(200).json({ messages: [] });
         }
-        res.status(200).json(converation.messages)
+        res.status(200).json(conversation.messages)
 
 
         

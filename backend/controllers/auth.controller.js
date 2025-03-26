@@ -39,19 +39,40 @@ const signup = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {            
+const login = async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({username});
-        if(!user){
+
+        // Check if username or password is missing
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Username and password are required' });
+        }
+
+        // Find user by username
+        const user = await User.findOne({ username });
+        if (!user) {
             return res.status(400).json({ message: 'User not found' });
         }
+
+        // Check if password is correct
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        if(!isPasswordCorrect){
+        if (!isPasswordCorrect) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
-        generateTokenandSetCookie(user._id,res);
-        res.status(200).json({ message: 'User logged in successfully' });
+
+        // Generate token and set cookie
+        generateTokenandSetCookie(user._id, res);
+
+        // Send user details (excluding password)
+        res.status(200).json({
+            message: 'User logged in successfully',
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePicture: user.profilePicture, // Include profile picture if available
+            }
+        });
 
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error: error.message });

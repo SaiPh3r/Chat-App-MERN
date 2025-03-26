@@ -24,7 +24,7 @@ const useLogin = () => {
       }
 
       // Save user data and update auth context
-      localStorage.setItem("chat-user", JSON.stringify(data));
+      localStorage.setItem("chat-user", JSON.stringify(data).username);
       setAuthUser(data);
 
       toast.success("Login successful!");
