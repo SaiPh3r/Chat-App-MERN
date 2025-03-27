@@ -4,6 +4,7 @@ import useConversation from '../../zustand/useConversation'
 const Conversation = ({conversation}) => {
   const{selectedConversation, setSelectedConversation} = useConversation()
   const isSelected = selectedConversation?._id === conversation._id
+  
   useEffect(() => {
     return()=>setSelectedConversation(null)
   },[setSelectedConversation])

@@ -4,6 +4,7 @@ import Messages from './Messages';
 import MessageInput from './MessageInput';
 import { LuMessageSquareText } from "react-icons/lu";
 import useConversation from '../../zustand/useConversation';
+import { useAuthContext } from '../../context/Authcontext';
 
 const MessageContainer = (conversation) => {
   const{selectedConversation, setSelectedConversation} = useConversation()
@@ -37,10 +38,11 @@ const MessageContainer = (conversation) => {
 export default MessageContainer;
 
 const NoChatsSelected = () => {
+  const {authUser} = useAuthContext(); 
   return (
     <div className="flex items-center justify-center w-full h-full bg-black text-center group">
       <div className="px-4 text-center sm:text-lg md:text-xl text-gray-200 font-semibold flex flex-col items-center gap-4 transform transition-all duration-300 hover:scale-105">
-        <p>Welcome John Doe </p>
+      <p>Welcome {authUser.user.username}</p>
         <p>Select a chat to start messaging</p>
         <div className="text-6xl text-center text-yellow-500 transform group-hover:rotate-6 transition-transform duration-300">
           <LuMessageSquareText />

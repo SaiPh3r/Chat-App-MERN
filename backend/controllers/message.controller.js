@@ -1,6 +1,6 @@
 const conversationModel = require("../models/conversationModel");
 const MessageModel = require("../models/messageModel");
-
+const { getRecieverSocketId } = require("../socket/socket");
 
 const sendMessage = async (req, res) => {
     try {
@@ -17,7 +17,7 @@ const sendMessage = async (req, res) => {
         // Create and save new message
         const newMessage = new MessageModel({
             senderId: sender,
-            receiverId: receiver,
+            receiverId: receiver, // ✅ Fixed: Using receiver instead of undefined receiverId
             message,
         });
 
@@ -27,35 +27,37 @@ const sendMessage = async (req, res) => {
         conversation.messages.push(newMessage._id);
         await conversation.save();
 
-        res.status(201).json({
-            success: true,
-            message: "Message sent successfully",
-            data: newMessage
-        });
-    } catch (error) { 
+        // ✅ Fix: Use `receiver` instead of `receiverId`
+        const receiverSocketId = getRecieverSocketId(receiver);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
+
+        res.status(201).json(newMessage);
+    } catch (error) {
         console.error("Error in sendMessage:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-}
+};
 
 const getMessages = async (req, res) => {
     try {
         const receiver = req.params.id;
         const sender = req.user._id;
 
-        const conversation = await conversationModel.findOne({ participants: { $all: [sender, receiver] } }).populate("messages");  // Populate the messages field  //populate is used to get the data of the referenced field
+        const conversation = await conversationModel
+            .findOne({ participants: { $all: [sender, receiver] } })
+            .populate("messages");  // Populate the messages field  
+
         if (!conversation) {
             return res.status(200).json({ messages: [] });
         }
-        res.status(200).json(conversation.messages)
 
-
-        
+        res.status(200).json(conversation.messages);
     } catch (error) {
-        console.error("Error in sendMessage:", error);
+        console.error("Error in getMessages:", error);
         res.status(500).json({ error: "Internal server error" });
-        
     }
-}
+};
 
 module.exports = { sendMessage, getMessages };
